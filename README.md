@@ -1,10 +1,10 @@
-# SSL Watchdog 🔒
+# SSL Watchdog
 
 A comprehensive, frontend-only web application for monitoring SSL certificate health and expiration dates for any domain. Built with vanilla HTML, CSS, and JavaScript.
 
 ![SSL Watchdog](https://img.shields.io/badge/SSL-Watchdog-blue) ![Frontend Only](https://img.shields.io/badge/Frontend-Only-green) ![No Backend](https://img.shields.io/badge/No-Backend-success)
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
@@ -20,7 +20,7 @@ A comprehensive, frontend-only web application for monitoring SSL certificate he
 - [Browser Support](#browser-support)
 - [Troubleshooting](#troubleshooting)
 
-## 🎯 Overview
+## Overview
 
 SSL Watchdog is a practical web application that allows users to check SSL certificate information for any domain. It provides real-time SSL certificate data including:
 
@@ -37,30 +37,30 @@ The application serves a critical purpose in cybersecurity and web administratio
 2. **Monitoring SSL Expiry**: Track certificate expiration dates to prevent service disruptions
 3. **Detecting Unsafe Websites**: Identify expired or invalid certificates that pose security risks
 
-## ✨ Features
+## Features
 
 ### Core Functionality
 
-- ✅ **SSL Certificate Checking**: Enter any domain to instantly retrieve SSL certificate data
-- ✅ **Real-time Status Display**: Visual status badges (Valid/Expiring/Expired)
-- ✅ **Search History**: Automatically saves all checked domains in browser localStorage
-- ✅ **Dark Mode**: Toggle between light and dark themes
-- ✅ **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- **SSL Certificate Checking**: Enter any domain to instantly retrieve SSL certificate data
+- **Real-time Status Display**: Visual status badges (Valid/Expiring/Expired)
+- **Search History**: Automatically saves all checked domains in browser localStorage
+- **Dark Mode**: Toggle between light and dark themes
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 
 ### Data Interaction Features
 
-#### 🔍 Searching
+#### Searching
 - Search through previous results by domain name or issuer
 - Real-time filtering as you type
 - Search history persists across browser sessions
 
-#### 🔄 Sorting
+#### Sorting
 - **Most Recent**: Latest checked domains first (default)
 - **Alphabetical (A-Z)**: Sort by domain name
 - **Expiring Soon**: Certificates expiring soonest first
 - **Longest Valid**: Certificates with most days remaining first
 
-#### 🎛️ Filtering
+#### Filtering
 - **Status Filter**: Filter by Valid, Expiring Soon (<30 days), or Expired certificates
 - **Issuer Filter**: Filter by certificate issuer (dynamically populated)
 - **Search Filter**: Search through history by domain or issuer name
@@ -69,25 +69,25 @@ The application serves a critical purpose in cybersecurity and web administratio
 
 The application includes robust error handling for:
 
-- ❌ Invalid domain format
-- ❌ Domains with no SSL certificate
-- ❌ API errors (500, 401, 403)
-- ❌ Network errors and connection issues
-- ❌ CORS problems
-- ❌ Rate limit errors
-- ❌ Empty search queries
+- Invalid domain format
+- Domains with no SSL certificate
+- API errors (500, 401, 403)
+- Network errors and connection issues
+- CORS problems
+- Rate limit errors
+- Empty search queries
 
 All errors are displayed in user-friendly alert boxes with clear messages.
 
 ### User Interface
 
-- 🎨 **Modern, Clean Design**: Professional UI with consistent typography
-- 🎯 **Intuitive Navigation**: Easy-to-use search bar and controls
-- 📊 **Clear Data Presentation**: Well-organized result cards with visual status indicators
-- 🎭 **Status Badges**: Color-coded badges (Green: Valid, Orange: Expiring, Red: Expired)
-- 📱 **Fully Responsive**: Mobile-first design that works on all screen sizes
+- **Modern, Clean Design**: Professional UI with consistent typography
+- **Intuitive Navigation**: Easy-to-use search bar and controls
+- **Clear Data Presentation**: Well-organized result cards with visual status indicators
+- **Status Badges**: Color-coded badges (Green: Valid, Orange: Expiring, Red: Expired)
+- **Fully Responsive**: Mobile-first design that works on all screen sizes
 
-## 🛡️ Why SSL Watchdog?
+## Why SSL Watchdog?
 
 SSL certificates are critical for web security. They encrypt data between users and websites, ensuring privacy and preventing man-in-the-middle attacks. SSL Watchdog helps:
 
@@ -96,7 +96,7 @@ SSL certificates are critical for web security. They encrypt data between users 
 - **General Users**: Check if websites they visit have valid SSL certificates
 - **Developers**: Quickly verify SSL status during development and testing
 
-## 🔌 API Information
+## API Information
 
 ### SSL Certificate API
 
@@ -129,7 +129,7 @@ The API returns JSON data containing:
 
 The application includes a default API key for demonstration purposes. Users can optionally provide their own RapidAPI key through the Settings modal.
 
-## 🚀 Local Development
+## Local Development
 
 ### Prerequisites
 
@@ -175,7 +175,7 @@ The application includes a default API key for demonstration purposes. Users can
 - All code is vanilla JavaScript (no frameworks or dependencies)
 - External dependencies: Font Awesome (via CDN) for icons
 
-## 📦 Deployment
+## Deployment
 
 SSL Watchdog is designed to be deployed as static files on any web server. It requires no backend, database, or server-side processing.
 
@@ -477,7 +477,7 @@ server {
 - [ ] Load distribution verified
 - [ ] Failover tested
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ssl-watchdog/
@@ -488,7 +488,7 @@ ssl-watchdog/
 └── README.md           # This file
 ```
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### Basic Usage
 
@@ -512,13 +512,13 @@ Click any sort button to reorder your search history:
 
 ### Settings
 
-1. Click the **Settings** icon (⚙️) in the header
+1. Click the **Settings** button in the header
 2. Enter your own RapidAPI key (optional - default key is provided)
 3. Click **Save Settings**
 
 ### Dark Mode
 
-Click the **moon/sun** icon in the header to toggle between light and dark themes.
+Click the dark mode toggle in Settings to toggle between light and dark themes.
 
 ### History Management
 
@@ -527,7 +527,7 @@ Click the **moon/sun** icon in the header to toggle between light and dark theme
 - **Remove Item**: Click the trash icon on any result card
 - **Clear All**: Click the trash icon in the history header
 
-## 📸 Screenshots
+## Screenshots
 
 ### Main Interface
 - Clean, modern design with search bar and history sidebar
@@ -544,15 +544,15 @@ Click the **moon/sun** icon in the header to toggle between light and dark theme
 - Real-time search through history
 - Multiple sorting options for different use cases
 
-## 🌐 Browser Support
+## Browser Support
 
 SSL Watchdog works on all modern browsers:
 
-- ✅ Chrome (latest)
-- ✅ Firefox (latest)
-- ✅ Safari (latest)
-- ✅ Edge (latest)
-- ✅ Opera (latest)
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+- Opera (latest)
 
 **Required Features:**
 - ES6+ JavaScript support
@@ -560,7 +560,7 @@ SSL Watchdog works on all modern browsers:
 - Fetch API
 - CSS Grid and Flexbox
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### API Errors
 
@@ -590,20 +590,20 @@ SSL Watchdog works on all modern browsers:
 **Problem**: Styles not loading
 - **Solution**: Ensure `style.css` is in the same directory as `index.html` and the path is correct.
 
-## 📝 License
+## License
 
 This project is provided as-is for educational and demonstration purposes.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **SSL Certificate API**: Provided by [RapidAPI](https://rapidapi.com)
 - **Icons**: [Font Awesome](https://fontawesome.com)
 
-## 📧 Support
+## Support
 
 For issues, questions, or contributions, please refer to the project repository.
 
 ---
 
-**SSL Watchdog** - Keeping your SSL certificates in check! 🔒
+**SSL Watchdog** - Keeping your SSL certificates in check!
 
