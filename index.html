@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSL Watchdog - SSL Certificate Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>SSL Watchdog</h1>
+            <div class="header-actions">
+                <button id="aboutBtn" class="btn-icon" title="About">
+                    <i></i> About
+                </button>
+                <button id="historyBtn" class="btn-icon" title="SSL History">
+                    <i></i> SSL History
+                </button>
+                <button id="settingsBtn" class="btn-icon" title="Settings">
+                    <i></i> Settings
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Purpose Description Card -->
+        <section class="purpose-card">
+            <h2>Why This Is Important</h2>
+            <p>SSL certificates are the foundation of secure web communication. They encrypt data between users and websites, protecting sensitive information from interception and ensuring the authenticity of websites. Without valid SSL certificates, users are vulnerable to data breaches, identity theft, and phishing attacks.</p>
+            <br>
+            <p><strong>About This Project:</strong> SSL Watchdog is a web application that provides instant SSL certificate monitoring for any domain. The tool helps website administrators, security professionals, and general users verify SSL certificate health and prevent potential security issues.</p>
+        </section>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <!-- First Row: Search and Check SSL -->
+                <div class="search-row">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="domainInput" 
+                            placeholder="Enter domain name (e.g., example.com)"
+                            autocomplete="off"
+                        >
+                    </div>
+                    <button id="searchBtn" class="btn-primary">
+                        Check SSL
+                    </button>
+                </div>
+                
+            </div>
+        </section>
+        
+        <!-- History Side Panel -->
+        <div id="historyPanel" class="history-panel hidden">
+            <div class="history-panel-header">
+                <h3>SSL History</h3>
+                <button id="closeHistoryPanel" class="btn-icon-small" title="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Sort Options in Sidebar -->
+            <div class="history-panel-sort">
+                <h4>Sort By</h4>
+                <div class="sort-options">
+                    <button class="sort-btn active" data-sort="recent">
+                        Most Recent
+                    </button>
+                    <button class="sort-btn" data-sort="alphabetical">
+                        A-Z
+                    </button>
+                    <button class="sort-btn" data-sort="expiring">
+                        Expiring Soon
+                    </button>
+                    <button class="sort-btn" data-sort="longest">
+                        Longest Valid
+                    </button>
+                </div>
+            </div>
+            
+            <div class="history-panel-search">
+                <input 
+                    type="text" 
+                    id="historySearch" 
+                    placeholder="Search history..."
+                >
+            </div>
+            <div class="history-panel-content">
+                <div id="historyList" class="history-list">
+                    <p class="empty-history">No search history yet.</p>
+                </div>
+            </div>
+            <div class="history-panel-footer">
+                <button id="clearHistoryBtn" class="btn-secondary">
+                    <i class="fas fa-trash"></i> Clear History
+                </button>
+            </div>
+        </div>
+        <div id="historyPanelOverlay" class="history-panel-overlay hidden"></div>
+
+        <!-- Error Message Container -->
+        <div id="errorContainer" class="error-container hidden"></div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator hidden">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Checking SSL certificate...</span>
+        </div>
+
+        <!-- Results Section -->
+        <section class="results-section">
+            <div id="resultsContainer" class="results-container">
+                <div class="welcome-message">
+                    <h2>Welcome to SSL Watchdog</h2>
+                    <p>Enter a domain name above to check its SSL certificate status.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>About SSL Watchdog</h3>
+                <button class="modal-close" id="closeAboutBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="about-content">
+                    <p>SSL Watchdog is built using modern web technologies including HTML, CSS, and vanilla JavaScript. </p>
+                        
+                    <p>The application integrates with the RapidAPI platform to provide real-time SSL certificate data and analysis.</p>
+                    
+                    <p><strong>Developed by Okechukwu Wisdom</strong></p>
+                    
+                    <p>
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="github-link">
+                            View Project Repository
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="modal-close" id="closeSettingsBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="darkModeToggle">
+                        Dark Mode
+                    </label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle" class="toggle-input">
+                        <label for="darkModeToggle" class="toggle-label">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-text" id="darkModeText">Off</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="apiKeyInput">
+                        <i></i> RapidAPI Key
+                    </label>
+                    <input 
+                        type="password" 
+                        id="apiKeyInput" 
+                        placeholder="Enter your RapidAPI key (optional)"
+                    >
+                    <small>If you have your own RapidAPI key, enter it here. Otherwise, the default key will be used.</small>
+                </div>
+                <div class="form-group">
+                    <button id="saveSettingsBtn" class="btn-primary">
+                        <i></i>Save Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>
+                SSL Certificate API provided by 
+                <a href="https://rapidapi.com" target="_blank" rel="noopener noreferrer">RapidAPI</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
