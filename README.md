@@ -529,20 +529,12 @@ Click the dark mode toggle in Settings to toggle between light and dark themes.
 
 ## Screenshots
 
-### Main Interface
-- Clean, modern design with search bar and history sidebar
-- Color-coded status badges for quick visual identification
-- Responsive layout that works on all devices
+<img width="1917" height="991" alt="Screenshot 2025-11-20 at 14 29 30" src="https://github.com/user-attachments/assets/eaafc9e0-bdd9-40c2-a775-4de206b22ecc" />
 
-### Result Display
-- Detailed certificate information in organized cards
-- Visual status indicators (Valid/Expiring/Expired)
-- Quick actions (copy domain, remove from history)
+<img width="1211" height="382" alt="Screenshot 2025-11-20 at 14 29 56" src="https://github.com/user-attachments/assets/d53560e2-b18d-4d5f-8621-0372f92ae51e" />
 
-### Filtering & Sorting
-- Multiple filter options for status and issuer
-- Real-time search through history
-- Multiple sorting options for different use cases
+<img width="399" height="989" alt="Screenshot 2025-11-20 at 14 30 54" src="https://github.com/user-attachments/assets/ec8c25eb-3017-473e-aadc-66fa6b8f7ee9" />
+
 
 ## Browser Support
 
