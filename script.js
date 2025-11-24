@@ -250,7 +250,7 @@ async function fetchSSLCertificate(domain) {
                 throw new Error('Rate limit exceeded. Please try again later.');
             }
             if (response.status === 401 || response.status === 403) {
-                throw new Error('Invalid API key. Please check your settings.');
+                throw new Error('No API key. Please check your settings.');
             }
             if (response.status >= 500) {
                 throw new Error('Server error. Please try again later.');
