@@ -2,6 +2,8 @@
 
 A comprehensive, frontend-only web application for monitoring SSL certificate health and expiration dates for any domain. Built with vanilla HTML, CSS, and JavaScript.
 
+[Demo Video:] (https://youtu.be/dVZiL13gIYw)
+
 ![SSL Watchdog](https://img.shields.io/badge/SSL-Watchdog-blue) ![Frontend Only](https://img.shields.io/badge/Frontend-Only-green) ![No Backend](https://img.shields.io/badge/No-Backend-success)
 
 ## Table of Contents
@@ -104,7 +106,7 @@ SSL Watchdog uses the **SSL Certificate Checker API** provided by **RapidAPI**.
 
 **API Provider**: [RapidAPI](https://rapidapi.com)
 
-**API Endpoint**: `https://check-ssl.p.rapidapi.com/sslcheck`
+**API Endpoint**: `https://rapidapi.com/digicatech/api/check-ssl`
 
 **Authentication**: RapidAPI Key (provided via x-rapidapi-key header)
 
@@ -125,7 +127,7 @@ The API returns JSON data containing:
 
 ### API Attribution
 
-**SSL Certificate API provided by: [RapidAPI](https://rapidapi.com)**
+**SSL Certificate API provided by: [RapidAPI]([https://rapidapi.com](https://rapidapi.com/digicatech/api/check-ssl))**
 
 The application includes a default API key for demonstration purposes. Users can optionally provide their own RapidAPI key through the Settings modal.
 
@@ -674,8 +676,7 @@ This project is provided as-is for educational and demonstration purposes.
 
 ## Acknowledgments
 
-- **SSL Certificate API**: Provided by [RapidAPI](https://rapidapi.com)
-- **Icons**: [Font Awesome](https://fontawesome.com)
+**SSL Certificate API provided by: [RapidAPI]([https://rapidapi.com](https://rapidapi.com/digicatech/api/check-ssl))**
 
 ## Support
 
