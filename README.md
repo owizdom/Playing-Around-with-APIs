@@ -616,20 +616,8 @@ Click the dark mode toggle in Settings to toggle between light and dark themes.
 
 ## Screenshots
 
-### Main Interface
-- Clean, modern design with search bar and history sidebar
-- Color-coded status badges for quick visual identification
-- Responsive layout that works on all devices
 
-### Result Display
-- Detailed certificate information in organized cards
-- Visual status indicators (Valid/Expiring/Expired)
-- Quick actions (copy domain, remove from history)
 
-### Filtering & Sorting
-- Multiple filter options for status and issuer
-- Real-time search through history
-- Multiple sorting options for different use cases
 
 ## Browser Support
 
