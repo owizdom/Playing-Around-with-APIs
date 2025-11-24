@@ -2,7 +2,7 @@
 
 A comprehensive, frontend-only web application for monitoring SSL certificate health and expiration dates for any domain. Built with vanilla HTML, CSS, and JavaScript.
 
-[Demo Video:] (https://youtu.be/dVZiL13gIYw)
+[Demo Video:](https://youtu.be/dVZiL13gIYw)
 
 ![SSL Watchdog](https://img.shields.io/badge/SSL-Watchdog-blue) ![Frontend Only](https://img.shields.io/badge/Frontend-Only-green) ![No Backend](https://img.shields.io/badge/No-Backend-success)
 
