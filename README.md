@@ -4,6 +4,12 @@ A comprehensive, frontend-only web application for monitoring SSL certificate he
 
 [Demo Video:](https://youtu.be/dVZiL13gIYw)
 
+[Load Balancer URL](https://jamesjames.tech/)
+
+[WEB-01 SERVER URL](http://web-01.jamesjames.tech/)
+
+[WEB-02 SERVER URL](http://web-02.jamesjames.tech/)
+
 ![SSL Watchdog](https://img.shields.io/badge/SSL-Watchdog-blue) ![Frontend Only](https://img.shields.io/badge/Frontend-Only-green) ![No Backend](https://img.shields.io/badge/No-Backend-success)
 
 ## Table of Contents
