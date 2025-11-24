@@ -72,8 +72,13 @@ build/
 config.js
 secrets.js
 api-keys.js
+API_KEYS.md
 *.key
 *.pem
+*secret*
+*private*
+credentials.*
+.secrets
 
 # Testing
 coverage/

@@ -247,45 +247,93 @@ SSL Watchdog is designed to be deployed as static files on any web server. It re
 
 ### Two-Server Setup with Load Balancer
 
-This setup provides high availability and load distribution across two web servers.
+This setup provides high availability and load distribution across two web servers with a dedicated load balancer. This is the production deployment configuration used for SSL Watchdog.
 
 #### Architecture Overview
 
 ```
                     [Load Balancer]
+                  jamesjames.tech
+                   44.208.25.11
                          |
             +------------+------------+
             |                         |
     [Web Server 1]            [Web Server 2]
-    (Nginx/Apache)            (Nginx/Apache)
+  web-01.jamesjames.tech   web-02.jamesjames.tech
+     52.207.233.85           44.210.116.102
             |                         |
             +------------+------------+
                          |
                   [Static Files]
+              /var/www/ssl-watchdog
 ```
 
-#### Step 1: Prepare Both Web Servers
+#### Prerequisites
 
-**On Web Server 1 (e.g., 192.168.1.10):**
+- Three Ubuntu servers (or similar Linux distribution)
+- SSH access with key-based authentication configured
+- Nginx installed on all servers
+- Domain name configured with DNS pointing to load balancer IP
 
-1. **Create directory**:
+#### Automated Deployment
+
+The easiest way to deploy is using the provided deployment script:
+
+1. **Ensure SSH key is configured**:
    ```bash
+   # Your SSH key should be at ~/.ssh/id_rsa
+   # Make sure it's added to all three servers
+   ssh -i ~/.ssh/id_rsa ubuntu@52.207.233.85  # Test web-01
+   ssh -i ~/.ssh/id_rsa ubuntu@44.210.116.102  # Test web-02
+   ssh -i ~/.ssh/id_rsa ubuntu@44.208.25.11    # Test load balancer
+   ```
+
+2. **Run the deployment script**:
+   ```bash
+   ./deploy.sh
+   ```
+
+   The script will:
+   - Deploy application files to both web servers
+   - Configure Nginx on web servers
+   - Configure load balancer
+   - Set up health checks
+   - Verify deployment
+
+#### Manual Deployment Steps
+
+If you prefer to deploy manually or need to troubleshoot:
+
+##### Step 1: Deploy to Web Server 1 (web-01.jamesjames.tech)
+
+1. **Create directory and set permissions**:
+   ```bash
+   ssh ubuntu@52.207.233.85
    sudo mkdir -p /var/www/ssl-watchdog
    sudo chown -R www-data:www-data /var/www/ssl-watchdog
    ```
 
-2. **Upload files**:
+2. **Upload application files**:
    ```bash
-   scp -r * user@192.168.1.10:/var/www/ssl-watchdog/
+   # From your local machine
+   scp index.html style.css script.js ubuntu@52.207.233.85:/tmp/
+   
+   # On the server, move files to correct location
+   ssh ubuntu@52.207.233.85
+   sudo mv /tmp/index.html /tmp/style.css /tmp/script.js /var/www/ssl-watchdog/
+   sudo chown -R www-data:www-data /var/www/ssl-watchdog
    ```
 
-3. **Configure Nginx** (`/etc/nginx/sites-available/ssl-watchdog`):
+3. **Create Nginx configuration** (`/etc/nginx/sites-available/ssl-watchdog`):
    ```nginx
    server {
        listen 80;
        server_name _;
        root /var/www/ssl-watchdog;
        index index.html;
+
+       access_log /var/log/nginx/ssl-watchdog-access.log;
+       error_log /var/log/nginx/ssl-watchdog-error.log;
 
        location / {
            try_files $uri $uri/ /index.html;
@@ -297,39 +345,72 @@ This setup provides high availability and load distribution across two web serve
            return 200 "healthy\n";
            add_header Content-Type text/plain;
        }
+
+       # Cache static assets
+       location ~* \.(css|js|jpg|jpeg|png|gif|ico|svg)$ {
+           expires 1y;
+           add_header Cache-Control "public, immutable";
+       }
    }
    ```
 
-4. **Enable and test**:
+4. **Enable site and start Nginx**:
    ```bash
+   sudo rm -f /etc/nginx/sites-enabled/default
    sudo ln -s /etc/nginx/sites-available/ssl-watchdog /etc/nginx/sites-enabled/
    sudo nginx -t
-   sudo systemctl reload nginx
+   sudo systemctl start nginx
+   sudo systemctl enable nginx
    ```
 
-**On Web Server 2 (e.g., 192.168.1.11):**
+5. **Verify deployment**:
+   ```bash
+   curl http://localhost/health  # Should return "healthy"
+   curl http://localhost/        # Should return the application
+   ```
 
-Repeat the same steps as Web Server 1, ensuring identical file structure and configuration.
+##### Step 2: Deploy to Web Server 2 (web-02.jamesjames.tech)
 
-#### Step 2: Configure Load Balancer
+Repeat all steps from Step 1, but use the web-02 server IP (44.210.116.102):
 
-**Using Nginx as Load Balancer:**
+```bash
+ssh ubuntu@44.210.116.102
+# ... same steps as web-01 ...
+```
 
-1. **Install Nginx** on the load balancer server (if not already installed)
+##### Step 3: Configure Load Balancer (jamesjames.tech)
 
-2. **Create load balancer configuration** (`/etc/nginx/sites-available/load-balancer`):
+1. **SSH into load balancer**:
+   ```bash
+   ssh ubuntu@44.208.25.11
+   ```
+
+2. **Stop any conflicting services** (if HAProxy or Apache is running):
+   ```bash
+   sudo systemctl stop haproxy 2>/dev/null || true
+   sudo systemctl disable haproxy 2>/dev/null || true
+   sudo systemctl stop apache2 2>/dev/null || true
+   sudo systemctl disable apache2 2>/dev/null || true
+   ```
+
+3. **Check port 80 availability**:
+   ```bash
+   sudo ss -tulpn | grep ':80 '
+   # If something is using port 80, stop it
+   ```
+
+4. **Create load balancer configuration** (`/etc/nginx/sites-available/load-balancer`):
    ```nginx
    upstream ssl_watchdog_backend {
-       # Health checks
        least_conn;  # Use least connections algorithm
-       
-       server 192.168.1.10:80 max_fails=3 fail_timeout=30s;
-       server 192.168.1.11:80 max_fails=3 fail_timeout=30s;
+       server 52.207.233.85:80 max_fails=3 fail_timeout=30s;
+       server 44.210.116.102:80 max_fails=3 fail_timeout=30s;
    }
 
    server {
        listen 80;
-       server_name your-domain.com;
+       listen [::]:80;
+       server_name jamesjames.tech;
 
        # Health check endpoint
        location /health {
@@ -346,77 +427,79 @@ Repeat the same steps as Web Server 1, ensuring identical file structure and con
            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
            proxy_set_header X-Forwarded-Proto $scheme;
            
-           # Health check headers
+           # Timeouts
            proxy_connect_timeout 5s;
            proxy_send_timeout 10s;
            proxy_read_timeout 10s;
+           
+           # Buffering
+           proxy_buffering on;
+           proxy_buffer_size 4k;
+           proxy_buffers 8 4k;
        }
    }
    ```
 
-3. **Enable and test**:
+5. **Enable site and start Nginx**:
    ```bash
+   sudo rm -f /etc/nginx/sites-enabled/default
    sudo ln -s /etc/nginx/sites-available/load-balancer /etc/nginx/sites-enabled/
    sudo nginx -t
-   sudo systemctl reload nginx
+   sudo systemctl start nginx
+   sudo systemctl enable nginx
    ```
 
-**Using HAProxy as Load Balancer:**
+6. **Verify load balancer**:
+   ```bash
+   curl http://localhost/health  # Should return "load-balancer-ok"
+   curl http://localhost/        # Should return the application
+   ```
 
-1. **Install HAProxy**:
+##### Step 4: Enable HTTPS (SSL/TLS)
+
+1. **Install Certbot**:
    ```bash
    sudo apt-get update
-   sudo apt-get install haproxy
+   sudo apt-get install -y certbot python3-certbot-nginx
    ```
 
-2. **Configure HAProxy** (`/etc/haproxy/haproxy.cfg`):
-   ```haproxy
-   global
-       log /dev/log local0
-       maxconn 4096
-       daemon
+2. **Update DNS**: Ensure `jamesjames.tech` points to `44.208.25.11`
 
-   defaults
-       log global
-       mode http
-       option httplog
-       option dontlognull
-       timeout connect 5000ms
-       timeout client 50000ms
-       timeout server 50000ms
-
-   frontend http_front
-       bind *:80
-       default_backend ssl_watchdog_backend
-
-   backend ssl_watchdog_backend
-       balance roundrobin
-       option httpchk GET /health
-       http-check expect status 200
-       server web1 192.168.1.10:80 check
-       server web2 192.168.1.11:80 check
-   ```
-
-3. **Start HAProxy**:
+3. **Run the HTTPS setup script**:
    ```bash
-   sudo systemctl start haproxy
-   sudo systemctl enable haproxy
+   ./enable-https.sh
    ```
 
-#### Step 3: Verify Load Balancer Distribution
+   Or manually:
+   ```bash
+   sudo certbot --nginx -d jamesjames.tech
+   ```
+
+   Certbot will:
+   - Obtain SSL certificate from Let's Encrypt
+   - Automatically configure Nginx for HTTPS
+   - Set up automatic renewal
+
+4. **Verify HTTPS**:
+   ```bash
+   curl -I https://jamesjames.tech/
+   curl -I http://jamesjames.tech/  # Should redirect to HTTPS
+   ```
+
+#### Verification and Testing
 
 1. **Test health endpoints**:
    ```bash
-   curl http://192.168.1.10/health  # Should return "healthy"
-   curl http://192.168.1.11/health  # Should return "healthy"
-   curl http://load-balancer-ip/health  # Should return "load-balancer-ok"
+   curl http://52.207.233.85/health      # Web-01: "healthy"
+   curl http://44.210.116.102/health     # Web-02: "healthy"
+   curl http://jamesjames.tech/health     # Load balancer: "load-balancer-ok"
    ```
 
 2. **Test load distribution**:
    ```bash
-   # Make multiple requests and check which server responds
+   # Make multiple requests to see load balancing in action
    for i in {1..10}; do
-       curl -s http://your-domain.com/ | grep -o "Server:.*" || echo "Request $i"
+       curl -s http://jamesjames.tech/ | head -1
    done
    ```
 
@@ -426,56 +509,60 @@ Repeat the same steps as Web Server 1, ensuring identical file structure and con
    sudo tail -f /var/log/nginx/access.log
    
    # On web servers
-   sudo tail -f /var/log/nginx/access.log
+   sudo tail -f /var/log/nginx/ssl-watchdog-access.log
    ```
 
 4. **Test failover**:
-   - Stop one web server: `sudo systemctl stop nginx`
-   - Verify traffic routes to the remaining server
-   - Restart the stopped server
+   - Stop one web server: `sudo systemctl stop nginx` on web-01
+   - Verify traffic routes to web-02
+   - Restart web-01: `sudo systemctl start nginx`
    - Verify traffic distributes again
 
-#### Step 4: SSL/TLS Configuration (Optional but Recommended)
+#### Load Balancing Algorithm
 
-For production, configure SSL certificates on the load balancer:
+The configuration uses **least_conn** (least connections), which distributes requests to the server with the fewest active connections. This provides better load distribution than round-robin for applications with varying request processing times.
 
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name your-domain.com;
+#### Security Features
 
-    ssl_certificate /path/to/certificate.crt;
-    ssl_certificate_key /path/to/private.key;
-
-    # SSL configuration
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-
-    location / {
-        proxy_pass http://ssl_watchdog_backend;
-        # ... proxy settings ...
-    }
-}
-
-# Redirect HTTP to HTTPS
-server {
-    listen 80;
-    server_name your-domain.com;
-    return 301 https://$server_name$request_uri;
-}
-```
+- **Health checks**: Automatic failover if a backend server becomes unavailable
+- **SSL/TLS**: HTTPS encryption with automatic certificate renewal
+- **Security headers**: Configured via Nginx (HSTS, X-Frame-Options, etc.)
+- **Failover protection**: `max_fails=3 fail_timeout=30s` prevents routing to unhealthy servers
 
 ### Deployment Checklist
 
-- [ ] Files uploaded to web server(s)
-- [ ] Web server configured and running
-- [ ] Load balancer configured (if using two-server setup)
-- [ ] Health check endpoints responding
-- [ ] DNS pointing to load balancer or web server
-- [ ] SSL/TLS configured (for production)
-- [ ] Firewall rules configured
+**Web Servers (web-01 and web-02):**
+- [ ] SSH key authentication configured
+- [ ] Application files uploaded to `/var/www/ssl-watchdog`
+- [ ] Nginx configuration created at `/etc/nginx/sites-available/ssl-watchdog`
+- [ ] Default Nginx site disabled
+- [ ] Nginx service started and enabled
+- [ ] Health check endpoint responding (`/health`)
+- [ ] Application accessible on port 80
+
+**Load Balancer:**
+- [ ] SSH key authentication configured
+- [ ] Conflicting services stopped (HAProxy, Apache)
+- [ ] Port 80 available
+- [ ] Load balancer configuration created at `/etc/nginx/sites-available/load-balancer`
+- [ ] Default Nginx site disabled
+- [ ] Nginx service started and enabled
+- [ ] Health check endpoint responding (`/health`)
+- [ ] Load balancing verified (traffic distributes between web-01 and web-02)
+
+**DNS and SSL:**
+- [ ] DNS A record added: `jamesjames.tech` → `44.208.25.11`
+- [ ] DNS propagation verified (`dig jamesjames.tech +short`)
+- [ ] SSL certificate obtained via Certbot
+- [ ] HTTPS enabled and working
+- [ ] HTTP to HTTPS redirect working
+
+**Testing:**
+- [ ] Health checks passing on all servers
 - [ ] Load distribution verified
-- [ ] Failover tested
+- [ ] Failover tested (stop one web server, verify traffic continues)
+- [ ] Application accessible via domain name
+- [ ] SSL certificate valid and auto-renewal configured
 
 ## Project Structure
 
