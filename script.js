@@ -7,23 +7,23 @@
  * Endpoint: https://check-ssl.p.rapidapi.com/sslcheck
  * Host: check-ssl.p.rapidapi.com
  * 
- * API Key: [PROVIDED IN SUBMISSION COMMENTS - NOT STORED IN CODE]
+ * API Key: 921f9e1ca0msh1f5dc5216bb21d8p19d3dcjsna8238095ded7
  * 
- * Note: API key is not stored in source code for security reasons.
- * The API key will be provided in the submission comments section.
- * Users can also provide their own RapidAPI key through the Settings modal.
+ * Note: This API key is provided for demonstration purposes.
+ * In production, API keys should be stored in environment variables
+ * or secure configuration files that are NOT committed to version control.
  * 
  * To use your own API key:
  * 1. Sign up at https://rapidapi.com
  * 2. Subscribe to the SSL Certificate Checker API
  * 3. Get your API key from the RapidAPI dashboard
- * 4. Enter it in the Settings modal
+ * 4. Enter it in the Settings modal or replace the DEFAULT_API_KEY below
  */
 
 // Configuration
 const CONFIG = {
     API_BASE_URL: 'https://check-ssl.p.rapidapi.com/sslcheck',
-    DEFAULT_API_KEY: '', // API key provided in submission comments section
+    DEFAULT_API_KEY: '921f9e1ca0msh1f5dc5216bb21d8p19d3dcjsna8238095ded7', // API key provided in submission comments
     API_HOST: 'check-ssl.p.rapidapi.com',
     STORAGE_KEYS: {
         HISTORY: 'sslWatchdogHistory',
